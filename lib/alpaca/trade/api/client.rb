@@ -54,6 +54,15 @@ module Alpaca
           json["bars"].map { |bar| Bar.new(bar) }
         end
 
+        def latest_bar(symbol:)
+          response = get_request(data_endpoint, "v2/stocks/#{symbol}/bars/latest")
+          raise Unprocessable, JSON.parse(response.body)['message'] if response.status == 422
+          raise InvalidRequest, JSON.parse(response.body)['message'] if response.status == 400
+          raise RateLimitedError, JSON.parse(response.body)['message'] if response.status == 429
+          json = JSON.parse(response.body)
+          json["bars"].map { |bar| Bar.new(bar) }
+        end
+
         def calendar(start_date: Date.today, end_date: (Date.today + 30))
           # FIX, use start_date.strftime('%F')
           params = { "start" => start_date.iso8601, "end" => end_date.iso8601 }
