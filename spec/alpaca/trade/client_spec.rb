@@ -84,26 +84,29 @@ RSpec.describe Alpaca::Trade::Api::Client do
 
   describe '#bars' do
     it 'returns Bar objects for one symbol', :vcr do
-      bars = subject.bars('1D', ['CRM'])
-      expect(bars['CRM']).to be_an(Array)
+      bars = subject.bars(timeframe: '15Min', symbol:'QQQ', start: Time.new(2021, 8, 26, 14, 0, 0,  "+00:00"), end_: Time.new(2021, 9, 6, 14, 0, 0,  "+00:00"), limit: 3)
+      puts bars.inspect
+      expect(bars).to be_an(Array)
 
-      bar = bars['CRM'].first
+      bar = bars.first
       expect(bar).to be_an(Alpaca::Trade::Api::Bar)
-      expect(bar.close).to eq(160.57)
+      expect(bar.close).to eq(374.25)
     end
 
-    it 'returns Bar objects for multiple symbols', :vcr do
-      bars = subject.bars('1D', %w[CRM FB AMZN])
-      expect(bars['FB']).to be_an(Array)
+    # Deprecated (https://alpaca.markets/docs/api-documentation/api-v2/market-data/alpaca-data-api-v2/historical/#bars)
 
-      bar = bars['AMZN'].first
-      expect(bar).to be_an(Alpaca::Trade::Api::Bar)
-    end
+    # it 'returns Bar objects for multiple symbols', :vcr do
+    #   bars = subject.bars('1D', %w[CRM FB AMZN])
+    #   expect(bars['FB']).to be_an(Array)
+    #
+    #   bar = bars['AMZN'].first
+    #   expect(bar).to be_an(Alpaca::Trade::Api::Bar)
+    # end
 
     it 'accepts limit as parameter', :vcr do
-      bars = subject.bars('1D', ['CRM'], limit: 10)
-      expect(bars['CRM']).to be_an(Array)
-      expect(bars['CRM'].size).to eq(10)
+      bars = subject.bars(timeframe: '15Min', symbol:'QQQ', start:Time.new(2021, 8, 26, 14, 0, 0,  "+00:00"), end_: Time.new(2021, 9, 6, 14, 0, 0,  "+00:00"), limit: 3)
+      expect(bars).to be_an(Array)
+      expect(bars.size).to eq(3)
     end
 
     it 'doesnt accept invalid time frames' do
