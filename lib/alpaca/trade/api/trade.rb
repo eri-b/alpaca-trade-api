@@ -5,9 +5,12 @@ module Alpaca
         attr_reader :status, :trade, :last
 
         def initialize(json)
-          @status = json['status']
-          @symbol = json['symbol']
-          @trade = json['trade']
+          format = "%Y-%m-%dT%H:%M:%SZ"
+          @time = DateTime.strptime(json['t'], format)
+          @size = json['s']
+          @conditions = json['c']
+          @exchange = json['x']
+          @tape = json['z']
         end
       end
     end
