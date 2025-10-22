@@ -2,7 +2,7 @@ module Alpaca
   module Trade
     module Api
       class Trade
-        attr_reader :status, :trade, :last
+        attr_reader :time, :size, :conditions, :exchange, :tape
 
         def initialize(json)
           format = "%Y-%m-%dT%H:%M:%SZ"
