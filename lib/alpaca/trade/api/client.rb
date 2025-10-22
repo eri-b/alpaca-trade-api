@@ -54,9 +54,8 @@ module Alpaca
           json["bars"].map { |bar| Bar.new(bar) }
         end
 
-        def trades(timeframe:, symbol:, start:, end_: Time.now, limit: 100)
-          validate_timeframe(timeframe)
-          response = get_request(data_endpoint, "v2/stocks/#{symbol}/trades", limit: limit, timeframe: timeframe, start: start.utc.strftime('%FT%TZ'), end: end_.utc.strftime('%FT%TZ'))
+        def trades(symbol:, start:, end_: Time.now, limit: 10000)
+          response = get_request(data_endpoint, "v2/stocks/#{symbol}/trades", limit: limit, start: start.utc.strftime('%FT%TZ'), end: end_.utc.strftime('%FT%TZ'))
           raise Unprocessable, JSON.parse(response.body)['message'] if response.status == 422
           raise InvalidRequest, JSON.parse(response.body)['message'] if response.status == 400
           raise RateLimitedError, JSON.parse(response.body)['message'] if response.status == 429
