@@ -5,9 +5,7 @@ module Alpaca
         attr_reader :time, :size, :conditions, :exchange, :tape
 
         def initialize(json)
-          format = "%Y-%m-%dT%H:%M:%SZ"
-          format = "%Y-%m-%dT%H:%M:%S.%NZ"
-          @time = DateTime.strptime(json['t'], format)
+          @time = DateTime.iso8601(json['t'])
           @size = json['s']
           @conditions = json['c']
           @exchange = json['x']
